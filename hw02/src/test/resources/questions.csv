@@ -1,0 +1,2 @@
+# Эту строку надо пропустить при настройке CsvToBean (withSkipLines)
+Does the test work?;Yes%true|No%false
