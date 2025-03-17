@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all persons</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 300px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        button {
+            margin-bottom: 5px;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .row {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            background-repeat: no-repeat;
+            padding: 2px;
+            padding-left: 30px;
+        }
+
+    </style>
+</head>
+<body>
+
+<h3>Books:</h3>
+
+<table class="books">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Genres</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="*{book.id}">1</td>
+        <td th:text="*{book.title}">Something about Something</td>
+        <td th:text="*{book.author.fullName}">John Doe</td>
+        <td th:text="*{book.genreListToString()}">Genre1, Genre2</td>
+        <td>
+            <form th:action="@{/edit/{id}(id=${book.id})}" th:method="get"><button>Edit</button></form>
+            <form th:action="@{/delete(id=${book.id})}" th:method="delete"><button>Delete</button></form>
+        </td>
+    </tr>
+    </tbody>
+    <div class="row">
+                <form th:action ="@{/find}" th:method="get"><button>Find</button></form>
+                <form th:action="@{/insert}" th:method="get"><button>Insert</button></form>
+    </div>
+</table>
+
+<h1><form id="back-to-all" th:action="@{/}" th:method="get"><button>To Home</button></form></h1>
+</body>
+</html>
