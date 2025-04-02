@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  data:
+    mongodb:
+      authentication-database: admin
+      username: admin
+      password: admin
+      database: library
+  batch:
+    job:
+      enabled: false
+
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.hw.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  level:
+    ROOT: ERROR
