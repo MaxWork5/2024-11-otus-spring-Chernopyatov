@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: admin
+      password: admin
+      database: library
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.hw.mongock.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
+
+logging:
+  level:
+    ROOT: ERROR
