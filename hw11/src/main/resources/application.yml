@@ -1,0 +1,11 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      username: admin
+      password: admin
+      database: library
+
+logging:
+  level:
+    ROOT: ERROR
