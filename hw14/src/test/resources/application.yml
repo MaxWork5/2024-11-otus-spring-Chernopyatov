@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  sql:
+    init:
+      mode: always
+      schema-locations: schema.sql
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  batch:
+    job:
+      enabled: false
+  shell:
+    interactive:
+      enabled: false
+    command:
+      version:
+        enabled: false
+  data:
+    mongodb:
+      host: localhost
+      port: 0
+      database: testLibrary
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.0.2
+mongock:
+  runner-type: "InitializingBean"
+  change-logs-scan-package:
+    - ru.otus.hw.changelog
+  mongo-db:
+    write-concern:
+      journal: false
+    read-concern: local
