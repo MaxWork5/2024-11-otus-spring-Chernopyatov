@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw-deployment
+  namespace: hw17-docker
+  labels:
+    app: hw-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hw-deployment
+  template:
+    metadata:
+      name: hw-deployment
+      labels:
+        app: hw-deployment
+    spec:
+      containers:
+        - name: hw-deployment
+          image: hw17-app
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
