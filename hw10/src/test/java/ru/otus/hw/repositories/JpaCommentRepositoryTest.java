@@ -1,0 +1,103 @@
+package ru.otus.hw.repositories;
+
+import org.hibernate.SessionFactory;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.DirtiesContext;
+import ru.otus.hw.domain.Comment;
+import ru.otus.hw.repositories.BookRepository;
+import ru.otus.hw.repositories.CommentRepository;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DisplayName("Репозиторий на основе JPA для работы с комментариями ")
+@DataJpaTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+class JpaCommentRepositoryTest {
+    @Autowired
+    private TestEntityManager em;
+    @Autowired
+    private BookRepository bookRepository;
+    @Autowired
+    private CommentRepository repository;
+
+    @DisplayName("должен загружать комментарий по id")
+    @Test
+    void findById() {
+        var comment = repository.findById(1);
+        var commentInBase = em.find(Comment.class, 1);
+        assertThat(comment).get()
+                .usingRecursiveComparison().isEqualTo(commentInBase);
+    }
+
+    @DisplayName("должен возвращать пустой Optional при отсутствие комментария по идентификатору")
+    @Test
+    void shouldReturnEmptyWhenCommentNotFoundById() {
+        var comment = repository.findById(120L);
+        assertThat(comment).isEmpty();
+    }
+
+    @DisplayName("должен загружать все комментарии принадлежащие одной книге")
+    @Test
+    void findAllByBookId() {
+        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
+                .unwrap(SessionFactory.class);
+        sessionFactory.getStatistics().setStatisticsEnabled(true);
+
+        var comments = repository.findAllByBookId(1);
+        System.out.println(comments);
+        assertThat(comments).isNotNull().hasSize(2)
+                .allMatch(c -> !c.getDescription().isEmpty())
+                .allMatch(c -> c.getBookId() != 0);
+
+        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(1);
+    }
+
+    @DisplayName("должен сохранять новый комментарий")
+    @Test
+    void insert() {;
+        var commentsBeforeSave = repository.findAllByBookId(1);
+        var savedComment = repository.save(new Comment(0, "Test_Comment_1", 1));
+        var commentsAfterSave = repository.findAllByBookId(1);
+        var baseComment = em.find(Comment.class, savedComment.getId());
+        assertThat(commentsAfterSave.size()).isEqualTo(commentsBeforeSave.size() + 1);
+        assertThat(savedComment).isNotNull().isEqualTo(baseComment);
+    }
+
+    @DisplayName("должен сохранять изменения в комментарии")
+    @Test
+    void update() {
+        var commentsBeforeSave = repository.findAllByBookId(3);
+        var savedComment = repository.save(new Comment(3, "Test_Comment_1", 3));
+        var commentsAfterSave = repository.findAllByBookId(3);
+        var baseComment = em.find(Comment.class, savedComment.getId());
+        assertThat(commentsAfterSave.size()).isEqualTo(commentsBeforeSave.size() + 1);
+        assertThat(savedComment).isNotNull().isEqualTo(baseComment);
+    }
+
+    @DisplayName("должен удалить комментарий по id ")
+    @Test
+    void deleteById() {
+        var commentsBeforeSave = repository.findAllByBookId(1);
+        var beforeDelete = repository.findById(1);
+        repository.deleteById(1);
+        var commentsAfterSave = repository.findAllByBookId(1);
+        var afterDeleting = repository.findById(1);
+        assertThat(commentsAfterSave.size()).isEqualTo(commentsBeforeSave.size() - 1);
+        assertThat(beforeDelete).isNotNull();
+        assertThat(afterDeleting).isNotNull().isEmpty();
+    }
+
+    @DisplayName("должен удалить комментарии по идентификатору книги ")
+    @Test
+    void deleteAllByBookId(){
+        var commentsBeforeSave = repository.findAllByBookId(2);
+        repository.deleteAllByBookId(2);
+        var commentsAfterSave = repository.findAllByBookId(2);
+        assertThat(commentsBeforeSave).isNotEmpty();
+        assertThat(commentsAfterSave).isEmpty();
+    }
+}
