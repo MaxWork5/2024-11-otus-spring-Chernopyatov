@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:maindb
+  sql:
+    init:
+      mode: always
+      data-locations:
+        classpath: /src/main/resources/data.sql
+      schema-locations:
+        classpath: /src/main/resources/schema.sql
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  jmx:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    defaults:
+      enabled: true
+
+logging:
+  level:
+    ROOT: ERROR
+  file:
+    name: logs.log

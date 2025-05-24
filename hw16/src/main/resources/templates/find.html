@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Find book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        h3 {
+            background-repeat: no-repeat;
+            padding: 2px;
+            padding-left: 30px;
+        }
+    </style>
+    <script>
+        function findBook() {
+            const savedBookContainer = document.getElementById("saved-person")
+            const idInput = document.getElementById("id-input")
+            const data = new URLSearchParams({'id': idInput.value});
+            fetch(`/api/books?${data}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(rawResponse => rawResponse.json())
+                .then(json => savedBookContainer.innerHTML = JSON.stringify(json, null, 4))
+        }
+    </script>
+</head>
+<body>
+<h3>Book Info:</h3>
+
+<form id="find-form" action="find.html" th:action="@{/api/books(id=${id})}" th:method="get">
+
+    <div class="row">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" name="id" th:value="${id}" value="1"/>
+    </div>
+    <div class="row">
+        <button type="button" onclick="findBook()">Find</button>
+        <a href="list.html" th:href="@{/}">
+            <button type="button">Return</button>
+        </a>
+    </div>
+</form>
+<h3>Saved Book:</h3>
+<pre id = "saved-person"></pre>
+
+</body>
+</html>
