@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Insert book</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        h3 {
+            background-repeat: no-repeat;
+            padding: 2px;
+            padding-left: 30px;
+        }
+
+        .errors {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<form id="insert-form" action="insert.html" th:action="@{/insert}" th:method="post" th:object="${book}">
+    <h3>Book Info:</h3>
+
+    <div class="row" hidden="hidden">
+        <label for="id-input">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" name="id" th:value="0" value="0"/>
+    </div>
+
+    <div class="row">
+        <label for="book-title-input">Title:</label>
+        <input id="book-title-input" name="title" type="text" value="Something about Somethin"/>
+    </div>
+
+    <div class="row">
+        <label for="authors_select">Author:</label>
+        <select class="form-control" id="authors_select" th:field="*{author.id}">
+            <option th:each="author : ${allAuthors}"
+                    th:value="${author.id}"
+                    th:text="${author.fullName}"/>
+        </select>
+    </div>
+
+    <div class="row">
+        <label for="genres_select">Genres:</label>
+        <select class="form-control" id="genres_select" th:field="*{genreIds}" multiple>
+            <option th:each="genre : ${allGenres}"
+                    th:value="${genre.id}"
+                    th:text="${genre.name}"/>
+        </select>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+        <a href="list.html" th:href="@{/}">
+            <button type="button">Cancel</button>
+        </a>
+    </div>
+</form>
+</body>
+</html>

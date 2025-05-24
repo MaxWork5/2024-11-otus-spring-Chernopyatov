@@ -1,0 +1,17 @@
+package ru.otus.hw.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import ru.otus.hw.domain.Author;
+
+@Data
+@AllArgsConstructor
+public class AuthorDto {
+    private long id;
+
+    private String fullName;
+
+    public static AuthorDto fromDomainObject(Author author) {
+        return new AuthorDto(author.getId(), author.getFullName());
+    }
+}
