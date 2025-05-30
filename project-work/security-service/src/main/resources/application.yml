@@ -1,0 +1,20 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:/inner-jwt.key.pub
+
+springdoc:
+  api-docs:
+    path: /security/api-docs
+
+event-service:
+  base-url: http://localhost:8082
+
+server:
+  port: 8081
+
+logging:
+  level:
+    web: debug
